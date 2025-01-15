@@ -27,7 +27,6 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,6 +35,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import org.springframework.boot.testsupport.BuildOutput;
+import org.springframework.boot.testsupport.TestResource;
 import org.springframework.util.Assert;
 import org.springframework.util.StreamUtils;
 
@@ -68,8 +68,8 @@ public final class CommandLineInvoker {
 	private Process runCliProcess(String... args) throws IOException {
 		Path m2 = this.temp.toPath().resolve(".m2");
 		Files.createDirectories(m2);
-		Files.copy(Paths.get("src", "intTest", "resources", "settings.xml"), m2.resolve("settings.xml"),
-				StandardCopyOption.REPLACE_EXISTING);
+		Files.copy(Path.of(new TestResource("src/intTest/resources/settings.xml").getPath()),
+				m2.resolve("settings.xml"), StandardCopyOption.REPLACE_EXISTING);
 		List<String> command = new ArrayList<>();
 		command.add(findLaunchScript().getAbsolutePath());
 		command.addAll(Arrays.asList(args));

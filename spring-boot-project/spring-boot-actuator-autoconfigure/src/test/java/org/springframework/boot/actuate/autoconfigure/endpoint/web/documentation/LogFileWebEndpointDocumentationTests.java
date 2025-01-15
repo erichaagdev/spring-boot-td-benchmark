@@ -20,6 +20,7 @@ import org.junit.jupiter.api.Test;
 
 import org.springframework.boot.actuate.logging.LogFileWebEndpoint;
 import org.springframework.boot.logging.LogFile;
+import org.springframework.boot.testsupport.TestResource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -56,8 +57,9 @@ class LogFileWebEndpointDocumentationTests extends MockMvcEndpointDocumentationT
 		@Bean
 		LogFileWebEndpoint endpoint() {
 			MockEnvironment environment = new MockEnvironment();
-			environment.setProperty("logging.file.name",
-					"src/test/resources/org/springframework/boot/actuate/autoconfigure/endpoint/web/documentation/sample.log");
+			environment.setProperty("logging.file.name", new TestResource(
+					"src/test/resources/org/springframework/boot/actuate/autoconfigure/endpoint/web/documentation/sample.log")
+				.getPath());
 			return new LogFileWebEndpoint(LogFile.get(environment), null);
 		}
 

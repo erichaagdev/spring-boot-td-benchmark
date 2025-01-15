@@ -92,19 +92,24 @@ def configureArchive(archive) {
 	}
 }
 
-task zip(type: Zip) {
+def zip = tasks.register("zip", Zip) {
 	archiveClassifier = "bin"
 	configureArchive it
 }
 
-intTest {
-	dependsOn zip
-}
-
-task tar(type: Tar) {
+def tar = tasks.register("tar", Tar) {
 	compression = "gzip"
 	archiveExtension = "tar.gz"
 	configureArchive it
+}
+
+tasks.named("intTest", Test).configure {
+	inputs.file(rootProject.layout.projectDirectory.file("gradle.properties"))
+			.withPathSensitivity(PathSensitivity.RELATIVE)
+	inputs.dir(zip.map { it.destinationDirectory })
+			.withPathSensitivity(PathSensitivity.RELATIVE)
+	inputs.dir(tar.map { it.destinationDirectory })
+			.withPathSensitivity(PathSensitivity.RELATIVE)
 }
 
 if (BuildProperties.get(project).buildType() == BuildType.OPEN_SOURCE) {
@@ -112,7 +117,7 @@ if (BuildProperties.get(project).buildType() == BuildType.OPEN_SOURCE) {
 		dependsOn tar
 		outputDir = layout.buildDirectory.dir("homebrew")
 		template = file("src/main/homebrew/spring-boot.rb")
-		archive = tar.archiveFile
+		archive = tar.flatMap { it.archiveFile }
 	}
 
 	def homebrewFormulaArtifact = artifacts.add("archives", file(layout.buildDirectory.file("homebrew/spring-boot.rb"))) {

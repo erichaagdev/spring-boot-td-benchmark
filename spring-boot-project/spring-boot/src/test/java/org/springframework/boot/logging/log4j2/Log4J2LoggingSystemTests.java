@@ -56,6 +56,7 @@ import org.springframework.boot.logging.LoggingInitializationContext;
 import org.springframework.boot.logging.LoggingSystem;
 import org.springframework.boot.logging.LoggingSystemProperties;
 import org.springframework.boot.logging.LoggingSystemProperty;
+import org.springframework.boot.testsupport.TestResource;
 import org.springframework.boot.testsupport.classpath.ClassPathExclusions;
 import org.springframework.boot.testsupport.logging.ConfigureClasspathToPreferLog4j2;
 import org.springframework.boot.testsupport.system.CapturedOutput;
@@ -448,14 +449,17 @@ class Log4J2LoggingSystemTests extends AbstractLoggingSystemTests {
 
 	@Test
 	void compositeConfigurationWithCustomBaseConfiguration() {
-		this.environment.setProperty("logging.log4j2.config.override", "src/test/resources/log4j2-override.xml");
-		this.loggingSystem.initialize(this.initializationContext, "src/test/resources/log4j2-nondefault.xml", null);
+		this.environment.setProperty("logging.log4j2.config.override",
+				new TestResource("src/test/resources/log4j2-override.xml").getPath());
+		this.loggingSystem.initialize(this.initializationContext,
+				new TestResource("src/test/resources/log4j2-nondefault.xml").getPath(), null);
 		assertThat(this.loggingSystem.getConfiguration()).isInstanceOf(CompositeConfiguration.class);
 	}
 
 	@Test
 	void compositeConfigurationWithStandardConfigLocationConfiguration() {
-		this.environment.setProperty("logging.log4j2.config.override", "src/test/resources/log4j2-override.xml");
+		this.environment.setProperty("logging.log4j2.config.override",
+				new TestResource("src/test/resources/log4j2-override.xml").getPath());
 		this.loggingSystem.initialize(this.initializationContext, null, null);
 		assertThat(this.loggingSystem.getConfiguration()).isInstanceOf(CompositeConfiguration.class);
 	}

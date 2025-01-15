@@ -27,6 +27,7 @@ import org.springframework.boot.autoconfigure.template.TemplateAvailabilityProvi
 import org.springframework.boot.test.context.assertj.AssertableWebApplicationContext;
 import org.springframework.boot.test.context.runner.ContextConsumer;
 import org.springframework.boot.test.context.runner.WebApplicationContextRunner;
+import org.springframework.boot.testsupport.TestResource;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -131,7 +132,7 @@ class WelcomePageNotAcceptableHandlerMappingTests {
 
 		@Bean
 		Resource staticIndexPage() {
-			return new FileSystemResource("src/test/resources/welcome-page/index.html");
+			return new FileSystemResource(new TestResource("src/test/resources/welcome-page/index.html").toFile());
 		}
 
 	}

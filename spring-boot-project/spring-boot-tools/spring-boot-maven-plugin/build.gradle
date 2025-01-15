@@ -176,3 +176,8 @@ tasks.named("generateAntoraPlaybook") {
 tasks.named("dockerTest").configure {
 	dependsOn tasks.named("prepareMavenBinaries")
 }
+
+tasks.named("intTest", Test).configure {
+	inputs.dir(layout.projectDirectory.dir("src/intTest/projects"))
+			.withPathSensitivity(PathSensitivity.RELATIVE)
+}

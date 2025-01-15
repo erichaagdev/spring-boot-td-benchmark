@@ -67,6 +67,7 @@ import org.springframework.boot.test.context.assertj.AssertableApplicationContex
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.boot.test.context.runner.ContextConsumer;
 import org.springframework.boot.test.system.OutputCaptureExtension;
+import org.springframework.boot.testsupport.TestResource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -429,7 +430,8 @@ class FlywayAutoConfigurationTests {
 	void failOnMissingLocationsAllExistWithFilesystemPrefix() {
 		this.contextRunner.withUserConfiguration(EmbeddedDataSourceConfiguration.class)
 			.withPropertyValues("spring.flyway.fail-on-missing-locations=true")
-			.withPropertyValues("spring.flyway.locations:filesystem:src/test/resources/db/migration")
+			.withPropertyValues(
+					"spring.flyway.locations:filesystem:" + new TestResource("src/test/resources/db/migration"))
 			.run((context) -> assertThat(context).hasNotFailed());
 	}
 

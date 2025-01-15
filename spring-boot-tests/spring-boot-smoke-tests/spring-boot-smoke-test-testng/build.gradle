@@ -17,5 +17,10 @@ dependencies {
 }
 
 test {
-	useTestNG()
+	useJUnitPlatform()
+}
+
+dependencies {
+	testImplementation("org.testng:testng:6.14.3")
+	testRuntimeOnly("org.junit.support:testng-engine:1.0.5")
 }

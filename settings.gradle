@@ -19,6 +19,33 @@ pluginManagement {
 
 plugins {
 	id "io.spring.develocity.conventions" version "0.0.22"
+	id "com.gradle.develocity" version "3.19"
+}
+
+develocity {
+	buildScan {
+		def maxLocalExecutors = System.getProperty("td.maxLocalExecutors")
+		def maxRemoteExecutors = System.getProperty("td.maxRemoteExecutors")
+		def minAgentPoolSize = System.getProperty("td.minAgentPoolSize")
+		def maxAgentPoolSize = System.getProperty("td.maxAgentPoolSize")
+		def runId = System.getProperty("td.runId")
+		def serverUrl = System.getProperty("com.gradle.scan.server")
+		def requestedTasks = gradle.startParameter.taskNames.join(",")
+
+		link("Benchmark builds", "$serverUrl/scans?search.names=td.runId&search.tasks=$requestedTasks&search.values=$runId")
+		tag("td-local-$maxLocalExecutors-remote-$maxRemoteExecutors")
+		value("td.apply", System.getProperty("td.apply"))
+		value("td.maxLocalExecutors", maxLocalExecutors)
+		value("td.maxRemoteExecutors", maxRemoteExecutors)
+		value("td.minAgentPoolSize", minAgentPoolSize)
+		value("td.maxAgentPoolSize", maxAgentPoolSize)
+		value("td.requirements", System.getProperty("td.requirements"))
+		value("td.runId", runId)
+
+		capture {
+			testLogging = false
+		}
+	}
 }
 
 rootProject.name="spring-boot-build"

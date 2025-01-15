@@ -32,13 +32,14 @@ dependencies {
 	testRepository(project(path: ":spring-boot-project:spring-boot-tools:spring-boot-loader", configuration: "mavenRepository"))
 	testRepository(project(path: ":spring-boot-project:spring-boot-starters:spring-boot-starter", configuration: "mavenRepository"))
 
-	testImplementation(project(path: ":spring-boot-project:spring-boot-tools:spring-boot-loader-tools"))
+	testImplementation(project(":spring-boot-project:spring-boot-tools:spring-boot-loader-tools"))
+	testImplementation(project(":spring-boot-project:spring-boot-tools:spring-boot-test-support"))
 	testImplementation("org.assertj:assertj-core")
 	testImplementation("org.junit.jupiter:junit-jupiter")
 	testImplementation("org.springframework:spring-core")
 }
 
-task syncTestRepository(type: Sync) {
+def syncTestRepository = tasks.register("syncTestRepository", Sync) {
 	destinationDir = file(layout.buildDirectory.dir("test-repository"))
 	from configurations.testRepository
 	rename {
@@ -46,31 +47,37 @@ task syncTestRepository(type: Sync) {
 	}
 }
 
-task syncAntSources(type: Sync) {
+def syncAntSources = tasks.register("syncAntSources", Sync) {
 	destinationDir file(layout.buildDirectory.dir("ant"))
 	from project.layout.projectDirectory
 	include "*.xml"
 	filter(springRepositoryTransformers.ant())
 }
 
-task antRun(type: JavaExec) {
+def antRun = tasks.register("antRun", JavaExec) {
 	workingDir layout.buildDirectory.dir("ant")
-	dependsOn syncTestRepository, syncAntSources, configurations.antDependencies
-	classpath = configurations.antDependencies;
+	classpath = configurations.antDependencies
 	mainClass = "org.apache.tools.ant.launch.Launcher"
 	args = [ "clean", "build" ]
 	systemProperties = [
 		"ant-spring-boot.version" : version,
-		"projectDir": project.layout.projectDirectory
+		//todo this should be a CommandLineArgumentProvider, or antRun should be a proper task class
+		"projectDir": project.layout.projectDirectory.asFile.absolutePath
 	]
+	inputs.dir(syncTestRepository.map { it.destinationDir })
+		.withPathSensitivity(PathSensitivity.RELATIVE)
+	inputs.dir(syncAntSources.map { it.destinationDir })
+		.withPathSensitivity(PathSensitivity.RELATIVE)
+	outputs.dir(layout.buildDirectory.dir("ant"))
 }
 
-task test(type: Test) {
-	dependsOn antRun
+def test = tasks.register("test", Test) {
 	testClassesDirs = sourceSets.test.output.classesDirs
 	classpath = sourceSets.test.runtimeClasspath
+	inputs.dir(antRun.map { it.outputs.files.singleFile })
+			.withPathSensitivity(PathSensitivity.RELATIVE)
 }
 
-check {
-	dependsOn test
+tasks.named("check") {
+	dependsOn(test)
 }

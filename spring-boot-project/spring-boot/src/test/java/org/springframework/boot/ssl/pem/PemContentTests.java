@@ -26,6 +26,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.boot.io.ApplicationResourceLoader;
+import org.springframework.boot.testsupport.TestResource;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.ResourceLoader;
@@ -194,14 +195,16 @@ class PemContentTests {
 
 	@Test
 	void loadWithStringWhenFileLocationReturnsContent() throws IOException {
-		String actual = PemContent.load("src/test/resources/test-cert.pem", ApplicationResourceLoader.get()).toString();
+		String actual = PemContent
+			.load(new TestResource("src/test/resources/test-cert.pem").getPath(), ApplicationResourceLoader.get())
+			.toString();
 		String expected = contentFromClasspath("test-cert.pem");
 		assertThat(actual).isEqualTo(expected);
 	}
 
 	@Test
 	void loadWithPathReturnsContent() throws IOException {
-		Path path = Path.of("src/test/resources/test-cert.pem");
+		Path path = Path.of(new TestResource("src/test/resources/test-cert.pem").getPath());
 		String actual = PemContent.load(path).toString();
 		String expected = contentFromClasspath("test-cert.pem");
 		assertThat(actual).isEqualTo(expected);

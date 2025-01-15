@@ -21,7 +21,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -29,7 +28,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import org.apache.logging.log4j.util.Strings;
 import org.assertj.core.api.Condition;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -46,6 +44,7 @@ import org.springframework.boot.context.properties.bind.Binder;
 import org.springframework.boot.context.properties.source.ConfigurationProperty;
 import org.springframework.boot.context.properties.source.ConfigurationPropertyName;
 import org.springframework.boot.origin.Origin;
+import org.springframework.boot.testsupport.TestResource;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Configuration;
@@ -435,20 +434,20 @@ class ConfigDataEnvironmentPostProcessorIntegrationTests {
 
 	@Test
 	void loadWhenHasConfigLocationAsFile() {
-		String location = "file:src/test/resources/specificlocation.properties";
+		String location = "file:" + new TestResource("src/test/resources/specificlocation.properties");
 		ConfigurableApplicationContext context = this.application.run("--spring.config.location=" + location);
-		assertThat(context.getEnvironment()).has(matchingPropertySource("Config resource 'file [" + Strings
-			.join(Arrays.asList("src", "test", "resources", "specificlocation.properties"), File.separatorChar)
-				+ "]' via location '" + location + "'"));
+		assertThat(context.getEnvironment()).has(matchingPropertySource(
+				"Config resource 'file [" + new TestResource("src/test/resources/specificlocation.properties")
+						+ "]' via location '" + location + "'"));
 	}
 
 	@Test
 	void loadWhenHasRelativeConfigLocationUsesFileLocation() {
-		String location = "src/test/resources/specificlocation.properties";
+		String location = new TestResource("src/test/resources/specificlocation.properties").toString();
 		ConfigurableApplicationContext context = this.application.run("--spring.config.location=" + location);
-		assertThat(context.getEnvironment()).has(matchingPropertySource("Config resource 'file [" + Strings
-			.join(Arrays.asList("src", "test", "resources", "specificlocation.properties"), File.separatorChar)
-				+ "]' via location '" + location + "'"));
+		assertThat(context.getEnvironment()).has(matchingPropertySource(
+				"Config resource 'file [" + new TestResource("src/test/resources/specificlocation.properties")
+						+ "]' via location '" + location + "'"));
 	}
 
 	@Test
@@ -718,8 +717,9 @@ class ConfigDataEnvironmentPostProcessorIntegrationTests {
 
 	@Test
 	void runWhenHasWildcardLocationLoadsFromAllMatchingLocations() {
-		ConfigurableApplicationContext context = this.application
-			.run("--spring.config.location=file:src/test/resources/config/*/", "--spring.config.name=testproperties");
+		ConfigurableApplicationContext context = this.application.run(
+				"--spring.config.location=file:" + new TestResource("src/test/resources/config/*/"),
+				"--spring.config.name=testproperties");
 		ConfigurableEnvironment environment = context.getEnvironment();
 		assertThat(environment.getProperty("first.property")).isEqualTo("apple");
 		assertThat(environment.getProperty("second.property")).isEqualTo("ball");
@@ -727,28 +727,30 @@ class ConfigDataEnvironmentPostProcessorIntegrationTests {
 
 	@Test
 	void runWhenOptionalWildcardLocationDoesNotExistDoesNotThrowException() {
-		assertThatNoException().isThrownBy(() -> this.application
-			.run("--spring.config.location=optional:file:src/test/resources/nonexistent/*/testproperties.properties"));
+		assertThatNoException().isThrownBy(() -> this.application.run("--spring.config.location=optional:file:"
+				+ new TestResource("src/test/resources/nonexistent/*/testproperties.properties")));
 	}
 
 	@Test
 	void runWhenMandatoryWildcardLocationDoesNotExistThrowsException() {
-		assertThatExceptionOfType(ConfigDataLocationNotFoundException.class).isThrownBy(() -> this.application
-			.run("--spring.config.location=file:src/test/resources/nonexistent/*/testproperties.properties"));
+		assertThatExceptionOfType(ConfigDataLocationNotFoundException.class)
+			.isThrownBy(() -> this.application.run("--spring.config.location=file:"
+					+ new TestResource("src/test/resources/nonexistent/*/testproperties.properties")));
 	}
 
 	@Test
 	void runWhenMandatoryWildcardLocationHasEmptyFileDirectory() {
-		assertThatNoException()
-			.isThrownBy(() -> this.application.run("--spring.config.location=file:src/test/resources/config/*/"));
+		assertThatNoException().isThrownBy(() -> this.application
+			.run("--spring.config.location=file:" + new TestResource("src/test/resources/config/*/")));
 	}
 
 	@Test
 	void runWhenMandatoryWildcardLocationHasNoSubdirectories() {
 		assertThatExceptionOfType(ConfigDataLocationNotFoundException.class)
-			.isThrownBy(
-					() -> this.application.run("--spring.config.location=file:src/test/resources/config/0-empty/*/"))
-			.withMessage("Config data location 'file:src/test/resources/config/0-empty/*/' contains no subdirectories");
+			.isThrownBy(() -> this.application
+				.run("--spring.config.location=file:" + new TestResource("src/test/resources/config/0-empty/*/")))
+			.withMessage("Config data location 'file:"
+					+ new TestResource("src/test/resources/config/0-empty/*/" + "' contains no subdirectories"));
 	}
 
 	@Test
@@ -766,7 +768,7 @@ class ConfigDataEnvironmentPostProcessorIntegrationTests {
 	@Test
 	void runWhenOptionalWildcardLocationHasNoSubdirectoriesDoesNotThrow() {
 		assertThatNoException().isThrownBy(() -> this.application
-			.run("--spring.config.location=optional:file:src/test/resources/config/0-empty/*/"));
+			.run("--spring.config.location=optional:file:" + new TestResource("src/test/resources/config/0-empty/*/")));
 	}
 
 	@Test // gh-24990

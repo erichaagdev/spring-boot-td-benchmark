@@ -30,6 +30,7 @@ import org.junit.jupiter.api.io.TempDir;
 import org.springframework.boot.build.bom.Library;
 import org.springframework.boot.build.bom.Library.LibraryVersion;
 import org.springframework.boot.build.bom.bomr.version.DependencyVersion;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.util.FileCopyUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -48,10 +49,10 @@ class UpgradeApplicatorTests {
 	@Test
 	void whenUpgradeIsAppliedToLibraryWithVersionThenBomIsUpdated() throws IOException {
 		File bom = new File(this.temp, "bom.gradle");
-		FileCopyUtils.copy(new File("src/test/resources/bom.gradle"), bom);
+		FileCopyUtils.copy(new ClassPathResource("/bom.gradle").getFile(), bom);
 		String originalContents = Files.readString(bom.toPath());
 		File gradleProperties = new File(this.temp, "gradle.properties");
-		FileCopyUtils.copy(new File("src/test/resources/gradle.properties"), gradleProperties);
+		FileCopyUtils.copy(new ClassPathResource("/gradle.properties").getFile(), gradleProperties);
 		new UpgradeApplicator(bom.toPath(), gradleProperties.toPath()).apply(
 				new Upgrade(
 						new Library("ActiveMQ", null, new LibraryVersion(DependencyVersion.parse("5.15.11")), null,
@@ -64,9 +65,9 @@ class UpgradeApplicatorTests {
 	@Test
 	void whenUpgradeIsAppliedToLibraryWithVersionPropertyThenGradlePropertiesIsUpdated() throws IOException {
 		File bom = new File(this.temp, "bom.gradle");
-		FileCopyUtils.copy(new File("src/test/resources/bom.gradle"), bom);
+		FileCopyUtils.copy(new ClassPathResource("/bom.gradle").getFile(), bom);
 		File gradleProperties = new File(this.temp, "gradle.properties");
-		FileCopyUtils.copy(new File("src/test/resources/gradle.properties"), gradleProperties);
+		FileCopyUtils.copy(new ClassPathResource("/gradle.properties").getFile(), gradleProperties);
 		new UpgradeApplicator(bom.toPath(), gradleProperties.toPath())
 			.apply(new Upgrade(new Library("Kotlin", null, new LibraryVersion(DependencyVersion.parse("1.3.70")), null,
 					null, false, null, null, null, Collections.emptyMap()), DependencyVersion.parse("1.4")));

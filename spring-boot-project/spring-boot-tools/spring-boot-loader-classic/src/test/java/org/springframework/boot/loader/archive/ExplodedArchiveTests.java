@@ -34,6 +34,7 @@ import org.junit.jupiter.api.io.TempDir;
 
 import org.springframework.boot.loader.TestJarCreator;
 import org.springframework.boot.loader.archive.Archive.Entry;
+import org.springframework.boot.testsupport.TestResource;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.util.StringUtils;
 
@@ -142,7 +143,8 @@ class ExplodedArchiveTests {
 
 	@Test
 	void getNonRecursiveManifest() throws Exception {
-		try (ExplodedArchive explodedArchive = new ExplodedArchive(new File("src/test/resources/root"))) {
+		try (ExplodedArchive explodedArchive = new ExplodedArchive(
+				new TestResource("src/test/resources/root").toFile())) {
 			assertThat(explodedArchive.getManifest()).isNotNull();
 			Map<String, Archive.Entry> entries = getEntriesMap(explodedArchive);
 			assertThat(entries).hasSize(4);
@@ -151,7 +153,8 @@ class ExplodedArchiveTests {
 
 	@Test
 	void getNonRecursiveManifestEvenIfNonRecursive() throws Exception {
-		try (ExplodedArchive explodedArchive = new ExplodedArchive(new File("src/test/resources/root"), false)) {
+		try (ExplodedArchive explodedArchive = new ExplodedArchive(new TestResource("src/test/resources/root").toFile(),
+				false)) {
 			assertThat(explodedArchive.getManifest()).isNotNull();
 			Map<String, Archive.Entry> entries = getEntriesMap(explodedArchive);
 			assertThat(entries).hasSize(3);
@@ -160,7 +163,8 @@ class ExplodedArchiveTests {
 
 	@Test
 	void getResourceAsStream() throws Exception {
-		try (ExplodedArchive explodedArchive = new ExplodedArchive(new File("src/test/resources/root"))) {
+		try (ExplodedArchive explodedArchive = new ExplodedArchive(
+				new TestResource("src/test/resources/root").toFile())) {
 			assertThat(explodedArchive.getManifest()).isNotNull();
 			URLClassLoader loader = new URLClassLoader(new URL[] { explodedArchive.getUrl() });
 			assertThat(loader.getResourceAsStream("META-INF/spring/application.xml")).isNotNull();
@@ -170,7 +174,8 @@ class ExplodedArchiveTests {
 
 	@Test
 	void getResourceAsStreamNonRecursive() throws Exception {
-		try (ExplodedArchive explodedArchive = new ExplodedArchive(new File("src/test/resources/root"), false)) {
+		try (ExplodedArchive explodedArchive = new ExplodedArchive(new TestResource("src/test/resources/root").toFile(),
+				false)) {
 			assertThat(explodedArchive.getManifest()).isNotNull();
 			URLClassLoader loader = new URLClassLoader(new URL[] { explodedArchive.getUrl() });
 			assertThat(loader.getResourceAsStream("META-INF/spring/application.xml")).isNotNull();

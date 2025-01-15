@@ -30,9 +30,11 @@ import org.gradle.api.services.BuildServiceParameters;
 abstract class DockerTestBuildService implements BuildService<BuildServiceParameters.None> {
 
 	static Provider<DockerTestBuildService> registerIfNecessary(Project project) {
+		int maxParallelUsages = Integer.parseInt(System.getProperty("dockerTest.maxParallelUsages"));
 		return project.getGradle()
 			.getSharedServices()
-			.registerIfAbsent("dockerTest", DockerTestBuildService.class, (spec) -> spec.getMaxParallelUsages().set(1));
+			.registerIfAbsent("dockerTest", DockerTestBuildService.class,
+					(spec) -> spec.getMaxParallelUsages().set(maxParallelUsages));
 	}
 
 }

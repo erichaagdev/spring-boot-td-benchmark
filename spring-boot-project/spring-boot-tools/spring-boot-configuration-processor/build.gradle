@@ -30,3 +30,8 @@ dependencies {
 		exclude group: "commons-logging", module: "commons-logging"
 	}
 }
+
+tasks.named("test", Test).configure {
+	inputs.dir(layout.projectDirectory.dir("src/test/java/org/springframework/boot/configurationsample"))
+			.withPathSensitivity(PathSensitivity.RELATIVE)
+}

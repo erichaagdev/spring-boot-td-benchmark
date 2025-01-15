@@ -30,6 +30,7 @@ import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.OS;
 
+import org.springframework.boot.testsupport.TestResource;
 import org.springframework.boot.testsupport.junit.DisabledOnOs;
 import org.springframework.boot.web.embedded.test.MockPkcs11Security;
 import org.springframework.boot.web.embedded.test.MockPkcs11SecurityProvider;
@@ -102,7 +103,7 @@ class SslServerCustomizerTests {
 		Ssl ssl = new Ssl();
 		ssl.setKeyStoreType("PKCS11");
 		ssl.setKeyStoreProvider(MockPkcs11SecurityProvider.NAME);
-		ssl.setKeyStore("src/test/resources/test.jks");
+		ssl.setKeyStore(new TestResource("src/test/resources/test.jks").getPath());
 		ssl.setKeyPassword("password");
 		assertThatIllegalStateException().isThrownBy(() -> {
 			SslServerCustomizer customizer = new SslServerCustomizer(null, null, null, WebServerSslBundle.get(ssl));

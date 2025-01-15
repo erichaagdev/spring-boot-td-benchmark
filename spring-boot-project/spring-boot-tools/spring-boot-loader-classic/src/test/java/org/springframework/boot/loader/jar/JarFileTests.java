@@ -56,6 +56,7 @@ import org.junit.jupiter.api.io.TempDir;
 
 import org.springframework.boot.loader.TestJarCreator;
 import org.springframework.boot.loader.data.RandomAccessDataFile;
+import org.springframework.boot.testsupport.TestResource;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.util.StopWatch;
 import org.springframework.util.StreamUtils;
@@ -668,7 +669,7 @@ class JarFileTests {
 
 	@Test
 	void mismatchedStreamEntriesThrowsException() throws IOException {
-		File mismatchJar = new File("src/test/resources/jars/mismatch.jar");
+		File mismatchJar = new TestResource("src/test/resources/jars/mismatch.jar").toFile();
 		IllegalStateException failure = null;
 		try (JarFile jarFile = new JarFile(mismatchJar)) {
 			JarFile nestedJarFile = jarFile.getNestedJarFile(jarFile.getJarEntry("inner.jar"));

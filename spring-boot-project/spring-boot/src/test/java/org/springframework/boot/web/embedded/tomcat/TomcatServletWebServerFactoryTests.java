@@ -82,6 +82,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
 
 import org.springframework.boot.ssl.DefaultSslBundleRegistry;
+import org.springframework.boot.testsupport.TestResource;
 import org.springframework.boot.testsupport.system.CapturedOutput;
 import org.springframework.boot.web.server.PortInUseException;
 import org.springframework.boot.web.server.Shutdown;
@@ -689,7 +690,7 @@ class TomcatServletWebServerFactoryTests extends AbstractServletWebServerFactory
 		TomcatServletWebServerFactory factory = getFactory();
 		addTestTxtFile(factory);
 		factory.setProtocol(Http11Nio2Protocol.class.getName());
-		factory.setSsl(getSsl(null, "password", "src/test/resources/test.jks"));
+		factory.setSsl(getSsl(null, "password", new TestResource("src/test/resources/test.jks").getPath()));
 		this.webServer = factory.getWebServer();
 		this.webServer.start();
 		HttpComponentsClientHttpRequestFactory requestFactory = createHttpComponentsRequestFactory(

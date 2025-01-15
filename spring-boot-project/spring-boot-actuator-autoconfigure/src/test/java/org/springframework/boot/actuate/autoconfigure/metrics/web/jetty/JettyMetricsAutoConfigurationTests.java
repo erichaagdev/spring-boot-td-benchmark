@@ -31,6 +31,7 @@ import org.springframework.boot.autoconfigure.web.servlet.ServletWebServerFactor
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.boot.test.context.runner.ReactiveWebApplicationContextRunner;
 import org.springframework.boot.test.context.runner.WebApplicationContextRunner;
+import org.springframework.boot.testsupport.TestResource;
 import org.springframework.boot.web.embedded.jetty.JettyReactiveWebServerFactory;
 import org.springframework.boot.web.embedded.jetty.JettyServletWebServerFactory;
 import org.springframework.boot.web.reactive.context.AnnotationConfigReactiveWebServerApplicationContext;
@@ -137,7 +138,8 @@ class JettyMetricsAutoConfigurationTests {
 			.withConfiguration(AutoConfigurations.of(JettyMetricsAutoConfiguration.class,
 					ServletWebServerFactoryAutoConfiguration.class))
 			.withUserConfiguration(ServletWebServerConfiguration.class, MeterRegistryConfiguration.class)
-			.withPropertyValues("server.ssl.enabled: true", "server.ssl.key-store: src/test/resources/test.jks",
+			.withPropertyValues("server.ssl.enabled: true",
+					"server.ssl.key-store: " + new TestResource("src/test/resources/test.jks"),
 					"server.ssl.key-store-password: secret", "server.ssl.key-password: password")
 			.run((context) -> {
 				context.publishEvent(createApplicationStartedEvent(context.getSourceApplicationContext()));
@@ -153,7 +155,8 @@ class JettyMetricsAutoConfigurationTests {
 			.withConfiguration(AutoConfigurations.of(JettyMetricsAutoConfiguration.class,
 					ReactiveWebServerFactoryAutoConfiguration.class))
 			.withUserConfiguration(ReactiveWebServerConfiguration.class, MeterRegistryConfiguration.class)
-			.withPropertyValues("server.ssl.enabled: true", "server.ssl.key-store: src/test/resources/test.jks",
+			.withPropertyValues("server.ssl.enabled: true",
+					"server.ssl.key-store: " + new TestResource("src/test/resources/test.jks"),
 					"server.ssl.key-store-password: secret", "server.ssl.key-password: password")
 			.run((context) -> {
 				context.publishEvent(createApplicationStartedEvent(context.getSourceApplicationContext()));
@@ -169,7 +172,8 @@ class JettyMetricsAutoConfigurationTests {
 					ServletWebServerFactoryAutoConfiguration.class))
 			.withUserConfiguration(ServletWebServerConfiguration.class, CustomJettySslHandshakeMetricsBinder.class,
 					MeterRegistryConfiguration.class)
-			.withPropertyValues("server.ssl.enabled: true", "server.ssl.key-store: src/test/resources/test.jks",
+			.withPropertyValues("server.ssl.enabled: true",
+					"server.ssl.key-store: " + new TestResource("src/test/resources/test.jks"),
 					"server.ssl.key-store-password: secret", "server.ssl.key-password: password")
 			.run((context) -> {
 				context.publishEvent(createApplicationStartedEvent(context.getSourceApplicationContext()));
@@ -182,7 +186,8 @@ class JettyMetricsAutoConfigurationTests {
 
 		new WebApplicationContextRunner().withConfiguration(AutoConfigurations.of(JettyMetricsAutoConfiguration.class))
 			.withUserConfiguration(CustomJettySslHandshakeMetricsBinder.class, MeterRegistryConfiguration.class)
-			.withPropertyValues("server.ssl.enabled: true", "server.ssl.key-store: src/test/resources/test.jks",
+			.withPropertyValues("server.ssl.enabled: true",
+					"server.ssl.key-store: " + new TestResource("src/test/resources/test.jks"),
 					"server.ssl.key-store-password: secret", "server.ssl.key-password: password")
 			.run((context) -> assertThat(context).hasSingleBean(JettySslHandshakeMetricsBinder.class)
 				.hasBean("customJettySslHandshakeMetricsBinder"));

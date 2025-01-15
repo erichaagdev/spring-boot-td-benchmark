@@ -42,6 +42,7 @@ import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.assertj.AssertableApplicationContext;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.boot.test.context.runner.ContextConsumer;
+import org.springframework.boot.testsupport.TestResource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.FileCopyUtils;
@@ -203,7 +204,7 @@ class HazelcastAutoConfigurationClientTests {
 	}
 
 	private File prepareConfiguration(String input) {
-		File configFile = new File(input);
+		File configFile = new TestResource(input).toFile();
 		try {
 			String config = FileCopyUtils.copyToString(new FileReader(configFile));
 			config = config.replace("${address}", endpointAddress);

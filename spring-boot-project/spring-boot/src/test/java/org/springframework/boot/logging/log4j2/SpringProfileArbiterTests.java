@@ -31,6 +31,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import org.springframework.boot.logging.LoggingInitializationContext;
+import org.springframework.boot.testsupport.TestResource;
 import org.springframework.boot.testsupport.classpath.ClassPathExclusions;
 import org.springframework.boot.testsupport.logging.ConfigureClasspathToPreferLog4j2;
 import org.springframework.boot.testsupport.system.CapturedOutput;
@@ -154,7 +155,7 @@ class SpringProfileArbiterTests {
 
 	private String getPackageResource(String fileName) {
 		String path = ClassUtils.getPackageName(getClass());
-		return "src/test/resources/" + path.replace('.', '/') + "/" + fileName;
+		return new TestResource("src/test/resources/" + path.replace('.', '/') + "/" + fileName).getPath();
 	}
 
 }

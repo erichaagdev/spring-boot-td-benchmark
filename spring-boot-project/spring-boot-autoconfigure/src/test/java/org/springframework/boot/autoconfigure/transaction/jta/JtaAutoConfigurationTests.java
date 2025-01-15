@@ -43,6 +43,7 @@ import org.osjava.sj.loader.JndiLoader;
 
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.boot.test.util.TestPropertyValues;
+import org.springframework.boot.testsupport.TestResource;
 import org.springframework.boot.testsupport.classpath.ClassPathExclusions;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -173,7 +174,10 @@ class JtaAutoConfigurationTests {
 
 		private InitialContext createInitialContext() {
 			try {
-				return new InitialContext();
+				InitialContext initialContext = new InitialContext();
+				initialContext.addToEnvironment("org.osjava.sj.root",
+						new TestResource("src/test/resources/simple-jndi"));
+				return initialContext;
 			}
 			catch (Exception ex) {
 				throw new RuntimeException();

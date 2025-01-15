@@ -22,6 +22,7 @@ import org.springframework.boot.ssl.SslBundle;
 import org.springframework.boot.ssl.SslBundleKey;
 import org.springframework.boot.ssl.SslOptions;
 import org.springframework.boot.ssl.SslStoreBundle;
+import org.springframework.boot.testsupport.TestResource;
 import org.springframework.boot.web.embedded.test.MockPkcs11Security;
 import org.springframework.boot.web.embedded.test.MockPkcs11SecurityProvider;
 
@@ -81,7 +82,7 @@ class WebServerSslBundleTests {
 		Ssl ssl = new Ssl();
 		ssl.setKeyStoreType("PKCS11");
 		ssl.setKeyStoreProvider(MockPkcs11SecurityProvider.NAME);
-		ssl.setKeyStore("src/test/resources/test.jks");
+		ssl.setKeyStore(new TestResource("src/test/resources/test.jks").getPath());
 		ssl.setKeyPassword("password");
 		ssl.setClientAuth(Ssl.ClientAuth.NONE);
 		assertThatIllegalStateException().isThrownBy(() -> WebServerSslBundle.get(ssl))

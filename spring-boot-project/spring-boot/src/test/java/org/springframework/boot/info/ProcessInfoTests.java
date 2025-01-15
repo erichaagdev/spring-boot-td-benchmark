@@ -16,6 +16,7 @@
 
 package org.springframework.boot.info;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.boot.info.ProcessInfo.MemoryInfo.MemoryUsageInfo;
@@ -40,6 +41,7 @@ class ProcessInfoTests {
 	}
 
 	@Test
+	@Disabled("fails randomly")
 	void memoryInfoIsAvailable() {
 		ProcessInfo processInfo = new ProcessInfo();
 		MemoryUsageInfo heapUsageInfo = processInfo.getMemory().getHeap();

@@ -18,7 +18,6 @@ package org.springframework.boot.build.antora;
 
 import java.io.File;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.List;
 
 import org.gradle.api.Project;
@@ -28,6 +27,7 @@ import org.junit.jupiter.api.io.TempDir;
 
 import org.springframework.boot.build.antora.Extensions.AntoraExtensionsConfiguration.ZipContentsCollector.AlwaysInclude;
 import org.springframework.boot.build.antora.GenerateAntoraPlaybook.AntoraExtensions.ZipContentsCollector;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.util.function.ThrowingConsumer;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -53,7 +53,8 @@ class GenerateAntoraPlaybookTests {
 		String actual = Files.readString(this.temp.toPath()
 			.resolve("rootproject/project/build/generated/docs/antora-playbook/antora-playbook.yml"));
 		String expected = Files
-			.readString(Path.of("src/test/resources/org/springframework/boot/build/antora/expected-playbook.yml"));
+			.readString(new ClassPathResource("org/springframework/boot/build/antora/expected-playbook.yml").getFile()
+				.toPath());
 		assertThat(actual.replace('\\', '/')).isEqualToNormalizingNewlines(expected.replace('\\', '/'));
 	}
 

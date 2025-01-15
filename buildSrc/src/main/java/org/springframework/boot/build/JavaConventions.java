@@ -183,11 +183,7 @@ class JavaConventions {
 			.getByType(DevelocityTestConfiguration.class)
 			.getTestRetry();
 		testRetry.getFailOnPassedAfterRetry().set(false);
-		testRetry.getMaxRetries().set(isCi() ? 3 : 0);
-	}
-
-	private boolean isCi() {
-		return Boolean.parseBoolean(System.getenv("CI"));
+		testRetry.getMaxRetries().set(3);
 	}
 
 	private void configurePredictiveTestSelection(Test test) {

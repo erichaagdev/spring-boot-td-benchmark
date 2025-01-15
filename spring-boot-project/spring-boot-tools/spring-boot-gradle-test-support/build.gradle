@@ -8,6 +8,7 @@ dependencies {
 	compileOnly("org.junit.jupiter:junit-jupiter")
 
 	implementation(gradleTestKit())
+	implementation(project(":spring-boot-project:spring-boot-tools:spring-boot-test-support"))
 	implementation("io.spring.gradle:dependency-management-plugin")
 	implementation("org.assertj:assertj-core")
 	implementation("org.springframework:spring-core")

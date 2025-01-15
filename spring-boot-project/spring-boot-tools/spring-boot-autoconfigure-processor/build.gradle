@@ -14,3 +14,8 @@ dependencies {
 	testImplementation("org.springframework:spring-core-test")
 	testImplementation("org.junit.jupiter:junit-jupiter")
 }
+
+tasks.named("test", Test).configure {
+	inputs.dir(layout.projectDirectory.file("src/test/java/org/springframework/boot/autoconfigureprocessor"))
+			.withPathSensitivity(PathSensitivity.RELATIVE)
+}

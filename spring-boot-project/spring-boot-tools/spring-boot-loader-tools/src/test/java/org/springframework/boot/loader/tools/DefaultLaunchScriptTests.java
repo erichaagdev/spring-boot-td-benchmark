@@ -24,6 +24,7 @@ import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+import org.springframework.boot.testsupport.TestResource;
 import org.springframework.util.FileCopyUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -130,7 +131,7 @@ class DefaultLaunchScriptTests {
 	@Test
 	void inlinedConfScriptFileLoad() throws IOException {
 		DefaultLaunchScript script = new DefaultLaunchScript(null,
-				createProperties("inlinedConfScript:src/test/resources/example.script"));
+				createProperties("inlinedConfScript:" + new TestResource("src/test/resources/example.script")));
 		String content = new String(script.toByteArray());
 		assertThat(content).contains("FOO=BAR");
 	}

@@ -83,7 +83,7 @@ dependencies {
 	testRuntimeOnly("io.r2dbc:r2dbc-h2")
 }
 
-task syncIntTestDependencies(type: Sync) {
+def syncIntTestDependencies = tasks.register("syncIntTestDependencies", Sync) {
 	destinationDir = file(layout.buildDirectory.dir("dependencies"))
 	from {
 		configurations.intTestDependencies
@@ -91,6 +91,7 @@ task syncIntTestDependencies(type: Sync) {
 	from jar
 }
 
-intTest {
-	dependsOn syncIntTestDependencies
+tasks.named("intTest", Test).configure {
+	inputs.dir(syncIntTestDependencies.map { it.destinationDir })
+			.withPathSensitivity(PathSensitivity.RELATIVE)
 }

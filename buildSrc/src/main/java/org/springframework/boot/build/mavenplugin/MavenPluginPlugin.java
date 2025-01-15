@@ -181,6 +181,11 @@ public class MavenPluginPlugin implements Plugin<Project> {
 		task.with(copyIntTestMavenRepositoryFiles(project, runtimeClasspathMavenRepository));
 		task.dependsOn(project.getTasks().getByName(MavenRepositoryPlugin.PUBLISH_TO_PROJECT_REPOSITORY_TASK_NAME));
 		project.getTasks().getByName(IntegrationTestPlugin.INT_TEST_TASK_NAME).dependsOn(task);
+		project.getTasks()
+			.named(IntegrationTestPlugin.INT_TEST_TASK_NAME)
+			.configure((intTest) -> intTest.getInputs()
+				.dir(task.getDestinationDir())
+				.withPathSensitivity(PathSensitivity.RELATIVE));
 		project.getPlugins()
 			.withType(DockerTestPlugin.class)
 			.all((dockerTestPlugin) -> project.getTasks()

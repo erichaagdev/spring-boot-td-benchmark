@@ -41,7 +41,7 @@ class AvailabilityProbesAutoConfigurationTests {
 
 	@Test
 	void probesWhenNotKubernetesAddsNoBeans() {
-		this.contextRunner.run(this::doesNotHaveProbeBeans);
+		this.contextRunner.withPropertyValues("spring.main.cloud-platform=NONE").run(this::doesNotHaveProbeBeans);
 	}
 
 	@Test

@@ -28,6 +28,8 @@ import java.util.zip.ZipEntry;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+import org.springframework.boot.testsupport.TestResource;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -50,14 +52,14 @@ class ChangelogGeneratorTests {
 		String[] args = new String[] { oldJars.getAbsolutePath(), newJars.getAbsolutePath(), out.getAbsolutePath() };
 		ChangelogGenerator.main(args);
 		assertThat(out).usingCharset(StandardCharsets.UTF_8)
-			.hasSameTextualContentAs(new File("src/test/resources/sample.adoc"));
+			.hasSameTextualContentAs(new TestResource("src/test/resources/sample.adoc").toFile());
 	}
 
 	private void addJar(File directory, String filename) throws IOException {
 		directory.mkdirs();
 		try (JarOutputStream out = new JarOutputStream(new FileOutputStream(new File(directory, "sample.jar")))) {
 			out.putNextEntry(new ZipEntry("META-INF/spring-configuration-metadata.json"));
-			try (InputStream in = new FileInputStream("src/test/resources/" + filename)) {
+			try (InputStream in = new FileInputStream(new TestResource("src/test/resources/" + filename).toFile())) {
 				in.transferTo(out);
 				out.closeEntry();
 			}

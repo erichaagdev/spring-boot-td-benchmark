@@ -22,6 +22,7 @@ import java.io.InputStream;
 
 import org.springframework.boot.configurationmetadata.ConfigurationMetadataRepository;
 import org.springframework.boot.configurationmetadata.ConfigurationMetadataRepositoryJsonBuilder;
+import org.springframework.boot.testsupport.TestResource;
 
 /**
  * Factory to create test {@link Changelog} instance.
@@ -41,7 +42,8 @@ final class TestChangelog {
 	}
 
 	private static ConfigurationMetadataRepository load(String filename) {
-		try (InputStream inputStream = new FileInputStream("src/test/resources/" + filename)) {
+		try (InputStream inputStream = new FileInputStream(
+				new TestResource("src/test/resources/" + filename).toFile())) {
 			return ConfigurationMetadataRepositoryJsonBuilder.create(inputStream).build();
 		}
 		catch (IOException ex) {

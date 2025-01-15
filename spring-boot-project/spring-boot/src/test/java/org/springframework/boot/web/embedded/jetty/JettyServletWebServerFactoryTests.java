@@ -62,6 +62,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
 
+import org.springframework.boot.testsupport.TestResource;
 import org.springframework.boot.testsupport.system.CapturedOutput;
 import org.springframework.boot.web.server.Compression;
 import org.springframework.boot.web.server.GracefulShutdownResult;
@@ -232,7 +233,7 @@ class JettyServletWebServerFactoryTests extends AbstractServletWebServerFactoryT
 	@Test
 	void sslCiphersConfiguration() {
 		Ssl ssl = new Ssl();
-		ssl.setKeyStore("src/test/resources/test.jks");
+		ssl.setKeyStore(new TestResource("src/test/resources/test.jks").getPath());
 		ssl.setKeyStorePassword("secret");
 		ssl.setKeyPassword("password");
 		ssl.setCiphers(new String[] { "ALPHA", "BRAVO", "CHARLIE" });
@@ -395,7 +396,7 @@ class JettyServletWebServerFactoryTests extends AbstractServletWebServerFactoryT
 
 	private Ssl getSslSettings(String... enabledProtocols) {
 		Ssl ssl = new Ssl();
-		ssl.setKeyStore("src/test/resources/test.jks");
+		ssl.setKeyStore(new TestResource("src/test/resources/test.jks").getPath());
 		ssl.setKeyStorePassword("secret");
 		ssl.setKeyPassword("password");
 		ssl.setCiphers(new String[] { "ALPHA", "BRAVO", "CHARLIE" });
@@ -484,7 +485,7 @@ class JettyServletWebServerFactoryTests extends AbstractServletWebServerFactoryT
 		InetAddress localhost = InetAddress.getLocalHost();
 		factory.setAddress(InetAddress.getByAddress(localhost.getAddress()));
 		Ssl ssl = new Ssl();
-		ssl.setKeyStore("src/test/resources/test.jks");
+		ssl.setKeyStore(new TestResource("src/test/resources/test.jks").getPath());
 		ssl.setKeyStorePassword("secret");
 		ssl.setKeyPassword("password");
 		factory.setSsl(ssl);

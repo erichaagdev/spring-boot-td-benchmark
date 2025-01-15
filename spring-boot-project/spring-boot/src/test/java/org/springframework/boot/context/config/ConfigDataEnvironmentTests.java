@@ -16,7 +16,6 @@
 
 package org.springframework.boot.context.config;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collection;
@@ -42,6 +41,7 @@ import org.springframework.boot.context.config.ConfigDataEnvironmentContributor.
 import org.springframework.boot.context.config.TestConfigDataEnvironmentUpdateListener.AddedPropertySource;
 import org.springframework.boot.context.properties.bind.Binder;
 import org.springframework.boot.logging.DeferredLogFactory;
+import org.springframework.boot.testsupport.TestResource;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.support.DefaultConversionService;
 import org.springframework.core.env.ConfigurableEnvironment;
@@ -350,8 +350,9 @@ class ConfigDataEnvironmentTests {
 			@Override
 			public Enumeration<URL> getResources(String name) throws IOException {
 				if (SpringFactoriesLoader.FACTORIES_RESOURCE_LOCATION.equals(name)) {
-					return Collections.enumeration(List.of(new File(
+					return Collections.enumeration(List.of(new TestResource(
 							"src/test/resources/org/springframework/boot/context/config/separate-class-loader-spring.factories")
+						.toFile()
 						.toURI()
 						.toURL()));
 				}

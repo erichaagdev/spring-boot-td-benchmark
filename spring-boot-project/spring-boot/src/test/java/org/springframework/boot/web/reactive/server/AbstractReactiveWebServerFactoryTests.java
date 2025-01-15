@@ -55,6 +55,7 @@ import reactor.netty.http.client.HttpClient;
 import reactor.netty.tcp.SslProvider.GenericSslContextSpec;
 import reactor.test.StepVerifier;
 
+import org.springframework.boot.testsupport.TestResource;
 import org.springframework.boot.web.server.Compression;
 import org.springframework.boot.web.server.GracefulShutdownResult;
 import org.springframework.boot.web.server.Http2;
@@ -172,8 +173,7 @@ public abstract class AbstractReactiveWebServerFactoryTests {
 
 	@Test
 	void basicSslFromFileSystem() {
-		testBasicSslWithKeyStore("src/test/resources/test.jks", "password");
-
+		testBasicSslWithKeyStore(new TestResource("src/test/resources/test.jks").getPath(), "password");
 	}
 
 	protected final void testBasicSslWithKeyStore(String keyStore, String keyPassword) {
@@ -279,7 +279,8 @@ public abstract class AbstractReactiveWebServerFactoryTests {
 	protected ReactorClientHttpConnector buildTrustAllSslWithClientKeyConnector(String keyStoreFile,
 			String keyStorePassword) throws Exception {
 		KeyStore clientKeyStore = KeyStore.getInstance(KeyStore.getDefaultType());
-		try (InputStream stream = new FileInputStream("src/test/resources/" + keyStoreFile)) {
+		try (InputStream stream = new FileInputStream(
+				new TestResource("src/test/resources/" + keyStoreFile).toFile())) {
 			clientKeyStore.load(stream, "secret".toCharArray());
 		}
 		KeyManagerFactory clientKeyManagerFactory = KeyManagerFactory

@@ -37,6 +37,7 @@ import org.gradle.testkit.runner.BuildResult;
 import org.gradle.testkit.runner.GradleRunner;
 import org.gradle.util.GradleVersion;
 
+import org.springframework.boot.testsupport.TestResource;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.util.FileSystemUtils;
 
@@ -168,7 +169,7 @@ public class GradleBuild {
 		if (this.settings != null) {
 			copyTransformedScript(this.settings, new File(this.projectDir, "settings.gradle"));
 		}
-		File repository = new File("src/test/resources/repository");
+		File repository = new TestResource("src/test/resources/repository").toFile();
 		if (repository.exists()) {
 			FileSystemUtils.copyRecursively(repository, new File(this.projectDir, "repository"));
 		}

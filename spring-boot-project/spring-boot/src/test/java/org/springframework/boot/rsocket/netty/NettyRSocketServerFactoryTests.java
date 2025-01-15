@@ -53,6 +53,7 @@ import org.springframework.boot.ssl.jks.JksSslStoreBundle;
 import org.springframework.boot.ssl.jks.JksSslStoreDetails;
 import org.springframework.boot.ssl.pem.PemSslStoreBundle;
 import org.springframework.boot.ssl.pem.PemSslStoreDetails;
+import org.springframework.boot.testsupport.TestResource;
 import org.springframework.boot.web.server.Ssl;
 import org.springframework.core.codec.CharSequenceEncoder;
 import org.springframework.core.codec.StringDecoder;
@@ -163,7 +164,7 @@ class NettyRSocketServerFactoryTests {
 
 	@Test
 	void tcpTransportBasicSslFromFileSystem() {
-		testBasicSslWithKeyStore("src/test/resources/test.jks", "password", Transport.TCP);
+		testBasicSslWithKeyStore(new TestResource("src/test/resources/test.jks").getPath(), "password", Transport.TCP);
 	}
 
 	@Test
@@ -173,7 +174,8 @@ class NettyRSocketServerFactoryTests {
 
 	@Test
 	void websocketTransportBasicSslFromFileSystem() {
-		testBasicSslWithKeyStore("src/test/resources/test.jks", "password", Transport.WEBSOCKET);
+		testBasicSslWithKeyStore(new TestResource("src/test/resources/test.jks").getPath(), "password",
+				Transport.WEBSOCKET);
 	}
 
 	@Test
@@ -184,8 +186,9 @@ class NettyRSocketServerFactoryTests {
 
 	@Test
 	void tcpTransportBasicSslCertificateFromFileSystem() {
-		testBasicSslWithPemCertificate("src/test/resources/test-cert.pem", "src/test/resources/test-key.pem",
-				"src/test/resources/test-cert.pem", Transport.TCP);
+		testBasicSslWithPemCertificate(new TestResource("src/test/resources/test-cert.pem").getPath(),
+				new TestResource("src/test/resources/test-key.pem").getPath(),
+				new TestResource("src/test/resources/test-cert.pem").getPath(), Transport.TCP);
 	}
 
 	@Test
@@ -196,8 +199,9 @@ class NettyRSocketServerFactoryTests {
 
 	@Test
 	void websocketTransportBasicSslCertificateFromFileSystem() {
-		testBasicSslWithPemCertificate("src/test/resources/test-cert.pem", "src/test/resources/test-key.pem",
-				"src/test/resources/test-cert.pem", Transport.WEBSOCKET);
+		testBasicSslWithPemCertificate(new TestResource("src/test/resources/test-cert.pem").getPath(),
+				new TestResource("src/test/resources/test-key.pem").getPath(),
+				new TestResource("src/test/resources/test-cert.pem").getPath(), Transport.WEBSOCKET);
 	}
 
 	@Test
@@ -207,7 +211,8 @@ class NettyRSocketServerFactoryTests {
 
 	@Test
 	void tcpTransportBasicSslFromFileSystemWithBundle() {
-		testBasicSslWithKeyStoreFromBundle("src/test/resources/test.jks", "password", Transport.TCP);
+		testBasicSslWithKeyStoreFromBundle(new TestResource("src/test/resources/test.jks").getPath(), "password",
+				Transport.TCP);
 	}
 
 	@Test
@@ -217,7 +222,8 @@ class NettyRSocketServerFactoryTests {
 
 	@Test
 	void websocketTransportBasicSslFromFileSystemWithBundle() {
-		testBasicSslWithKeyStoreFromBundle("src/test/resources/test.jks", "password", Transport.WEBSOCKET);
+		testBasicSslWithKeyStoreFromBundle(new TestResource("src/test/resources/test.jks").getPath(), "password",
+				Transport.WEBSOCKET);
 	}
 
 	@Test
@@ -228,8 +234,9 @@ class NettyRSocketServerFactoryTests {
 
 	@Test
 	void tcpTransportBasicSslCertificateFromFileSystemWithBundle() {
-		testBasicSslWithPemCertificateFromBundle("src/test/resources/test-cert.pem", "src/test/resources/test-key.pem",
-				"src/test/resources/test-cert.pem", Transport.TCP);
+		testBasicSslWithPemCertificateFromBundle(new TestResource("src/test/resources/test-cert.pem").getPath(),
+				new TestResource("src/test/resources/test-key.pem").getPath(),
+				new TestResource("src/test/resources/test-cert.pem").getPath(), Transport.TCP);
 	}
 
 	@Test
@@ -240,8 +247,9 @@ class NettyRSocketServerFactoryTests {
 
 	@Test
 	void websocketTransportBasicSslCertificateFromFileSystemWithBundle() {
-		testBasicSslWithPemCertificateFromBundle("src/test/resources/test-cert.pem", "src/test/resources/test-key.pem",
-				"src/test/resources/test-cert.pem", Transport.WEBSOCKET);
+		testBasicSslWithPemCertificateFromBundle(new TestResource("src/test/resources/test-cert.pem").getPath(),
+				new TestResource("src/test/resources/test-key.pem").getPath(),
+				new TestResource("src/test/resources/test-cert.pem").getPath(), Transport.WEBSOCKET);
 	}
 
 	private void checkEchoRequest() {

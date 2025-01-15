@@ -34,6 +34,7 @@ import org.junit.jupiter.api.io.TempDir;
 import org.springframework.boot.loader.net.protocol.Handlers;
 import org.springframework.boot.loader.testsupport.TestJar;
 import org.springframework.boot.loader.zip.AssertFileChannelDataBlocksClosed;
+import org.springframework.boot.testsupport.TestResource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -48,7 +49,7 @@ class JarUrlClassLoaderTests {
 	private static final URL APP_JAR;
 	static {
 		try {
-			APP_JAR = new URL("jar:file:src/test/resources/jars/app.jar!/");
+			APP_JAR = new URL("jar:file:" + new TestResource("src/test/resources/jars/app.jar!/"));
 		}
 		catch (MalformedURLException ex) {
 			throw new IllegalStateException(ex);
@@ -114,7 +115,7 @@ class JarUrlClassLoaderTests {
 
 	@Test
 	void loadClassFromNested() throws Exception {
-		File appJar = new File("src/test/resources/jars/app.jar");
+		File appJar = new TestResource("src/test/resources/jars/app.jar").toFile();
 		File jarFile = new File(this.tempDir, "test.jar");
 		FileOutputStream fileOutputStream = new FileOutputStream(jarFile);
 		try (JarOutputStream jarOutputStream = new JarOutputStream(fileOutputStream)) {

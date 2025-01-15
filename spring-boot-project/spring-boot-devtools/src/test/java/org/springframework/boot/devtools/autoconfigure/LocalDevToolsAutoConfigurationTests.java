@@ -44,6 +44,7 @@ import org.springframework.boot.devtools.restart.FailureHandler;
 import org.springframework.boot.devtools.restart.MockRestartInitializer;
 import org.springframework.boot.devtools.restart.MockRestarter;
 import org.springframework.boot.devtools.restart.Restarter;
+import org.springframework.boot.testsupport.TestResource;
 import org.springframework.boot.web.embedded.tomcat.TomcatWebServer;
 import org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -93,7 +94,7 @@ class LocalDevToolsAutoConfigurationTests {
 	@Test
 	void defaultPropertyCanBeOverriddenFromUserHomeProperties() throws Exception {
 		String userHome = System.getProperty("user.home");
-		System.setProperty("user.home", new File("src/test/resources/user-home").getAbsolutePath());
+		System.setProperty("user.home", new TestResource("src/test/resources/user-home").getPath());
 		try {
 			this.context = getContext(() -> initializeAndRun(Config.class));
 			AbstractTemplateViewResolver resolver = this.context.getBean(AbstractTemplateViewResolver.class);

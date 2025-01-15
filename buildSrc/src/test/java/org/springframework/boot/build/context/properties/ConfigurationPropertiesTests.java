@@ -16,10 +16,12 @@
 
 package org.springframework.boot.build.context.properties;
 
-import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 
 import org.junit.jupiter.api.Test;
+
+import org.springframework.core.io.ClassPathResource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -31,9 +33,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 class ConfigurationPropertiesTests {
 
 	@Test
-	void whenJsonHasAnIntegerDefaultValueThenItRemainsAnIntegerWhenRead() {
+	void whenJsonHasAnIntegerDefaultValueThenItRemainsAnIntegerWhenRead() throws IOException {
 		ConfigurationProperties properties = ConfigurationProperties
-			.fromFiles(Arrays.asList(new File("src/test/resources/spring-configuration-metadata.json")));
+			.fromFiles(Arrays.asList(new ClassPathResource("/spring-configuration-metadata.json").getFile()));
 		assertThat(properties.get("example.counter").getDefaultValue()).isEqualTo(0);
 	}
 

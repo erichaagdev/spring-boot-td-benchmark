@@ -44,6 +44,7 @@ import org.springframework.boot.loader.ref.Cleaner;
 import org.springframework.boot.loader.testsupport.TestJar;
 import org.springframework.boot.loader.zip.AssertFileChannelDataBlocksClosed;
 import org.springframework.boot.loader.zip.ZipContent;
+import org.springframework.boot.testsupport.TestResource;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.util.StopWatch;
 import org.springframework.util.StreamUtils;
@@ -414,7 +415,7 @@ class NestedJarFileTests {
 
 	@Test
 	void mismatchedStreamEntriesThrowsException() throws IOException {
-		File mismatchJar = new File("src/test/resources/jars/mismatch.jar");
+		File mismatchJar = new TestResource("src/test/resources/jars/mismatch.jar").toFile();
 		IllegalStateException failure = null;
 		try (NestedJarFile innerJar = new NestedJarFile(mismatchJar, "inner.jar")) {
 			Enumeration<JarEntry> entries = innerJar.entries();

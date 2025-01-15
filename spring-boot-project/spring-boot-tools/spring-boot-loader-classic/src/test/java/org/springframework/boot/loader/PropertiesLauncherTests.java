@@ -44,6 +44,7 @@ import org.springframework.boot.loader.archive.ExplodedArchive;
 import org.springframework.boot.loader.archive.JarFileArchive;
 import org.springframework.boot.loader.jar.Handler;
 import org.springframework.boot.loader.jar.JarFile;
+import org.springframework.boot.testsupport.TestResource;
 import org.springframework.boot.testsupport.system.CapturedOutput;
 import org.springframework.boot.testsupport.system.OutputCaptureExtension;
 import org.springframework.core.io.FileSystemResource;
@@ -76,7 +77,7 @@ class PropertiesLauncherTests {
 	void setup(CapturedOutput capturedOutput) throws Exception {
 		this.contextClassLoader = Thread.currentThread().getContextClassLoader();
 		clearHandlerCache();
-		System.setProperty("loader.home", new File("src/test/resources").getAbsolutePath());
+		System.setProperty("loader.home", new TestResource("src/test/resources").getPath());
 		this.output = capturedOutput;
 	}
 
@@ -117,7 +118,7 @@ class PropertiesLauncherTests {
 
 	@Test
 	void testAlternateHome() throws Exception {
-		System.setProperty("loader.home", "src/test/resources/home");
+		System.setProperty("loader.home", new TestResource("src/test/resources/home").getPath());
 		this.launcher = new PropertiesLauncher();
 		assertThat(this.launcher.getHomeDirectory()).isEqualTo(new File(System.getProperty("loader.home")));
 		assertThat(this.launcher.getMainClass()).isEqualTo("demo.HomeApplication");
@@ -125,7 +126,7 @@ class PropertiesLauncherTests {
 
 	@Test
 	void testNonExistentHome() {
-		System.setProperty("loader.home", "src/test/resources/nonexistent");
+		System.setProperty("loader.home", new TestResource("src/test/resources/nonexistent").getPath());
 		assertThatIllegalStateException().isThrownBy(PropertiesLauncher::new)
 			.withMessageContaining("Invalid source directory")
 			.withCauseInstanceOf(IllegalArgumentException.class);
@@ -192,10 +193,11 @@ class PropertiesLauncherTests {
 
 	@Test
 	void testUserSpecifiedRootOfJarPath() throws Exception {
-		System.setProperty("loader.path", "jar:file:./src/test/resources/nested-jars/app.jar!/");
+		System.setProperty("loader.path",
+				"jar:file:./" + new TestResource("src/test/resources/nested-jars/app.jar") + "!/");
 		this.launcher = new PropertiesLauncher();
 		assertThat(ReflectionTestUtils.getField(this.launcher, "paths"))
-			.hasToString("[jar:file:./src/test/resources/nested-jars/app.jar!/]");
+			.hasToString("[jar:file:./" + new TestResource("src/test/resources/nested-jars/app.jar") + "!/]");
 		List<Archive> archives = new ArrayList<>();
 		this.launcher.getClassPathArchivesIterator().forEachRemaining(archives::add);
 		assertThat(archives).areExactly(1, endingWith("foo.jar!/"));
@@ -214,7 +216,8 @@ class PropertiesLauncherTests {
 
 	@Test
 	void testUserSpecifiedRootOfJarPathWithDotAndJarPrefix() throws Exception {
-		System.setProperty("loader.path", "jar:file:./src/test/resources/nested-jars/app.jar!/./");
+		System.setProperty("loader.path",
+				"jar:file:./" + new TestResource("src/test/resources/nested-jars/app.jar") + "!/./");
 		this.launcher = new PropertiesLauncher();
 		List<Archive> archives = new ArrayList<>();
 		this.launcher.getClassPathArchivesIterator().forEachRemaining(archives::add);
@@ -363,7 +366,7 @@ class PropertiesLauncherTests {
 
 	@Test
 	void testManifestWithPlaceholders() throws Exception {
-		System.setProperty("loader.home", "src/test/resources/placeholders");
+		System.setProperty("loader.home", new TestResource("src/test/resources/placeholders").getPath());
 		this.launcher = new PropertiesLauncher();
 		assertThat(this.launcher.getMainClass()).isEqualTo("demo.FooApplication");
 	}

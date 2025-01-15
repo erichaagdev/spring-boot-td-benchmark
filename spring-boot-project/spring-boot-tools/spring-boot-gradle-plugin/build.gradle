@@ -1,4 +1,3 @@
-import org.gradle.plugins.ide.eclipse.EclipsePlugin
 import org.gradle.plugins.ide.eclipse.model.Classpath
 import org.gradle.plugins.ide.eclipse.model.Library
 
@@ -99,8 +98,14 @@ validatePlugins {
 	enableStricterValidation = true
 }
 
-tasks.named('test') {
-	inputs.dir('src/docs/antora/modules/gradle-plugin/examples').withPathSensitivity(PathSensitivity.RELATIVE).withPropertyName('buildScripts')
+tasks.named("test", Test).configure {
+	inputs.dir(layout.projectDirectory.dir("src/docs/antora/modules/gradle-plugin/examples"))
+			.withPathSensitivity(PathSensitivity.RELATIVE)
+			.withPropertyName("buildScripts")
+	inputs.dir(layout.projectDirectory.dir("src/test/java/com/example"))
+			.withPathSensitivity(PathSensitivity.RELATIVE)
+	inputs.file(layout.projectDirectory.file("build.gradle"))
+			.withPathSensitivity(PathSensitivity.RELATIVE)
 }
 
 javadoc {

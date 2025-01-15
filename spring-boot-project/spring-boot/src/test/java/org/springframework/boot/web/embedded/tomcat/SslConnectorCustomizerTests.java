@@ -28,6 +28,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import org.springframework.boot.testsupport.TestResource;
 import org.springframework.boot.testsupport.system.OutputCaptureExtension;
 import org.springframework.boot.testsupport.web.servlet.DirtiesUrlFactories;
 import org.springframework.boot.web.embedded.test.MockPkcs11Security;
@@ -88,7 +89,7 @@ class SslConnectorCustomizerTests {
 	void sslEnabledMultipleProtocolsConfiguration() throws Exception {
 		Ssl ssl = new Ssl();
 		ssl.setKeyPassword("password");
-		ssl.setKeyStore("src/test/resources/test.jks");
+		ssl.setKeyStore(new TestResource("src/test/resources/test.jks").getPath());
 		ssl.setEnabledProtocols(new String[] { "TLSv1.1", "TLSv1.2" });
 		ssl.setCiphers(new String[] { "TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256", "BRAVO" });
 		Connector connector = this.tomcat.getConnector();
@@ -104,7 +105,7 @@ class SslConnectorCustomizerTests {
 	void sslEnabledProtocolsConfiguration() throws Exception {
 		Ssl ssl = new Ssl();
 		ssl.setKeyPassword("password");
-		ssl.setKeyStore("src/test/resources/test.jks");
+		ssl.setKeyStore(new TestResource("src/test/resources/test.jks").getPath());
 		ssl.setEnabledProtocols(new String[] { "TLSv1.2" });
 		ssl.setCiphers(new String[] { "TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256", "BRAVO" });
 		Connector connector = this.tomcat.getConnector();
@@ -130,7 +131,7 @@ class SslConnectorCustomizerTests {
 		Ssl ssl = new Ssl();
 		ssl.setKeyStoreType("PKCS11");
 		ssl.setKeyStoreProvider(MockPkcs11SecurityProvider.NAME);
-		ssl.setKeyStore("src/test/resources/test.jks");
+		ssl.setKeyStore(new TestResource("src/test/resources/test.jks").getPath());
 		ssl.setKeyPassword("password");
 		assertThatIllegalStateException().isThrownBy(() -> {
 			SslConnectorCustomizer customizer = new SslConnectorCustomizer(this.logger, this.tomcat.getConnector(),

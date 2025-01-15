@@ -131,8 +131,12 @@ artifacts {
 	}
 }
 
-test {
+tasks.named("test", Test).configure {
 	include "**/*Tests.class"
+	inputs.dir(layout.projectDirectory.dir("src/test/webapp"))
+			.withPathSensitivity(PathSensitivity.RELATIVE)
+	inputs.dir(layout.projectDirectory.dir("src/main/webapp"))
+			.withPathSensitivity(PathSensitivity.RELATIVE)
 }
 
 task testSliceMetadata(type: org.springframework.boot.build.test.autoconfigure.TestSliceMetadata) {

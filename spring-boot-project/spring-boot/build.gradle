@@ -188,4 +188,6 @@ sourceSets {
 
 test {
 	jvmArgs += "--add-opens=java.base/java.net=ALL-UNNAMED"
+	inputs.file(rootProject.layout.projectDirectory.file("gradle.properties"))
+			.withPathSensitivity(PathSensitivity.RELATIVE)
 }

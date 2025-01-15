@@ -44,6 +44,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.loader.net.protocol.jar.JarUrl;
 import org.springframework.boot.loader.testsupport.TestJar;
 import org.springframework.boot.loader.zip.AssertFileChannelDataBlocksClosed;
+import org.springframework.boot.testsupport.TestResource;
 import org.springframework.boot.testsupport.system.CapturedOutput;
 import org.springframework.boot.testsupport.system.OutputCaptureExtension;
 import org.springframework.core.io.FileSystemResource;
@@ -74,7 +75,7 @@ class PropertiesLauncherTests extends AbstractLauncherTests {
 	@BeforeEach
 	void setup(CapturedOutput capturedOutput) {
 		this.contextClassLoader = Thread.currentThread().getContextClassLoader();
-		System.setProperty("loader.home", new File("src/test/resources").getAbsolutePath());
+		System.setProperty("loader.home", new TestResource("src/test/resources").getPath());
 		this.output = capturedOutput;
 	}
 
@@ -102,7 +103,7 @@ class PropertiesLauncherTests extends AbstractLauncherTests {
 
 	@Test
 	void testAlternateHome() throws Exception {
-		System.setProperty("loader.home", "src/test/resources/home");
+		System.setProperty("loader.home", new TestResource("src/test/resources/home").getPath());
 		this.launcher = new PropertiesLauncher();
 		assertThat(this.launcher.getHomeDirectory()).isEqualTo(new File(System.getProperty("loader.home")));
 		assertThat(this.launcher.getMainClass()).isEqualTo("demo.HomeApplication");
@@ -110,7 +111,7 @@ class PropertiesLauncherTests extends AbstractLauncherTests {
 
 	@Test
 	void testNonExistentHome() {
-		System.setProperty("loader.home", "src/test/resources/nonexistent");
+		System.setProperty("loader.home", new TestResource("src/test/resources/nonexistent").getPath());
 		assertThatIllegalArgumentException().isThrownBy(PropertiesLauncher::new)
 			.withMessageContaining("Invalid source directory");
 	}
@@ -175,10 +176,11 @@ class PropertiesLauncherTests extends AbstractLauncherTests {
 
 	@Test
 	void testUserSpecifiedRootOfJarPath() throws Exception {
-		System.setProperty("loader.path", "jar:file:./src/test/resources/nested-jars/app.jar!/");
+		System.setProperty("loader.path",
+				"jar:file:./" + new TestResource("src/test/resources/nested-jars/app.jar") + "!/");
 		this.launcher = new PropertiesLauncher();
 		assertThat(ReflectionTestUtils.getField(this.launcher, "paths"))
-			.hasToString("[jar:file:./src/test/resources/nested-jars/app.jar!/]");
+			.hasToString("[jar:file:./" + new TestResource("src/test/resources/nested-jars/app.jar") + "!/]");
 		Set<URL> urls = this.launcher.getClassPathUrls();
 		assertThat(urls).areExactly(1, endingWith("foo.jar!/"));
 		assertThat(urls).areExactly(1, endingWith("app.jar!/"));
@@ -195,7 +197,8 @@ class PropertiesLauncherTests extends AbstractLauncherTests {
 
 	@Test
 	void testUserSpecifiedRootOfJarPathWithDotAndJarPrefix() throws Exception {
-		System.setProperty("loader.path", "jar:file:./src/test/resources/nested-jars/app.jar!/./");
+		System.setProperty("loader.path",
+				"jar:file:./" + new TestResource("src/test/resources/nested-jars/app.jar") + "!/./");
 		this.launcher = new PropertiesLauncher();
 		Set<URL> urls = this.launcher.getClassPathUrls();
 		assertThat(urls).areExactly(1, endingWith("foo.jar!/"));
@@ -331,7 +334,7 @@ class PropertiesLauncherTests extends AbstractLauncherTests {
 
 	@Test
 	void testManifestWithPlaceholders() throws Exception {
-		System.setProperty("loader.home", "src/test/resources/placeholders");
+		System.setProperty("loader.home", new TestResource("src/test/resources/placeholders").getPath());
 		this.launcher = new PropertiesLauncher();
 		assertThat(this.launcher.getMainClass()).isEqualTo("demo.FooApplication");
 	}
@@ -371,7 +374,7 @@ class PropertiesLauncherTests extends AbstractLauncherTests {
 	void classPathWithoutLoaderPathDefaultsToJarLauncherIncludes() throws Exception {
 		File file = new File(this.tempDir, "test.jar");
 		try (JarOutputStream out = new JarOutputStream(new FileOutputStream(file))) {
-			try (JarFile in = new JarFile(new File("src/test/resources/jars/app.jar"))) {
+			try (JarFile in = new JarFile(new TestResource("src/test/resources/jars/app.jar").toFile())) {
 				out.putNextEntry(new ZipEntry("BOOT-INF/"));
 				out.putNextEntry(new ZipEntry("BOOT-INF/classes/"));
 				out.putNextEntry(new ZipEntry("BOOT-INF/classes/demo/"));

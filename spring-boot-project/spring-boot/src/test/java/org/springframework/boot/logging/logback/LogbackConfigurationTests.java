@@ -16,8 +16,6 @@
 
 package org.springframework.boot.logging.logback;
 
-import java.io.File;
-
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
 import ch.qos.logback.classic.joran.JoranConfigurator;
@@ -31,6 +29,8 @@ import ch.qos.logback.core.rolling.RollingFileAppender;
 import ch.qos.logback.core.rolling.RollingPolicy;
 import ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy;
 import org.junit.jupiter.api.Test;
+
+import org.springframework.boot.testsupport.TestResource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -47,7 +47,7 @@ class LogbackConfigurationTests {
 		JoranConfigurator configurator = new JoranConfigurator();
 		LoggerContext context = new LoggerContext();
 		configurator.setContext(context);
-		configurator.doConfigure(new File("src/test/resources/custom-console-log-pattern.xml"));
+		configurator.doConfigure(new TestResource("src/test/resources/custom-console-log-pattern.xml").toFile());
 		Appender<ILoggingEvent> appender = context.getLogger("ROOT").getAppender("CONSOLE");
 		assertThat(appender).isInstanceOf(ConsoleAppender.class);
 		Encoder<?> encoder = ((ConsoleAppender<?>) appender).getEncoder();
@@ -60,7 +60,7 @@ class LogbackConfigurationTests {
 		JoranConfigurator configurator = new JoranConfigurator();
 		LoggerContext context = new LoggerContext();
 		configurator.setContext(context);
-		configurator.doConfigure(new File("src/test/resources/custom-file-log-pattern.xml"));
+		configurator.doConfigure(new TestResource("src/test/resources/custom-file-log-pattern.xml").toFile());
 		Appender<ILoggingEvent> appender = context.getLogger("ROOT").getAppender("FILE");
 		assertThat(appender).isInstanceOf(FileAppender.class);
 		Encoder<?> encoder = ((FileAppender<?>) appender).getEncoder();
@@ -73,7 +73,7 @@ class LogbackConfigurationTests {
 		JoranConfigurator configurator = new JoranConfigurator();
 		LoggerContext context = new LoggerContext();
 		configurator.setContext(context);
-		configurator.doConfigure(new File("src/test/resources/custom-file-log-pattern.xml"));
+		configurator.doConfigure(new TestResource("src/test/resources/custom-file-log-pattern.xml").toFile());
 		Appender<ILoggingEvent> appender = context.getLogger("ROOT").getAppender("FILE");
 		assertThat(appender).isInstanceOf(RollingFileAppender.class);
 		RollingPolicy rollingPolicy = ((RollingFileAppender<?>) appender).getRollingPolicy();
@@ -86,7 +86,8 @@ class LogbackConfigurationTests {
 		JoranConfigurator configurator = new JoranConfigurator();
 		LoggerContext context = new LoggerContext();
 		configurator.setContext(context);
-		configurator.doConfigure(new File("src/test/resources/custom-file-log-pattern-with-fileNamePattern.xml"));
+		configurator.doConfigure(
+				new TestResource("src/test/resources/custom-file-log-pattern-with-fileNamePattern.xml").toFile());
 		Appender<ILoggingEvent> appender = context.getLogger("ROOT").getAppender("FILE");
 		assertThat(appender).isInstanceOf(RollingFileAppender.class);
 		RollingPolicy rollingPolicy = ((RollingFileAppender<?>) appender).getRollingPolicy();

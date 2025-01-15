@@ -16,12 +16,13 @@
 
 package org.springframework.boot.configurationmetadata.changelog;
 
-import java.io.File;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 
 import org.assertj.core.util.Files;
 import org.junit.jupiter.api.Test;
+
+import org.springframework.boot.testsupport.TestResource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -38,7 +39,8 @@ class ChangelogWriterTests {
 		try (ChangelogWriter writer = new ChangelogWriter(out)) {
 			writer.write(TestChangelog.load());
 		}
-		String expected = Files.contentOf(new File("src/test/resources/sample.adoc"), StandardCharsets.UTF_8);
+		String expected = Files.contentOf(new TestResource("src/test/resources/sample.adoc").toFile(),
+				StandardCharsets.UTF_8);
 		assertThat(out).hasToString(expected);
 	}
 

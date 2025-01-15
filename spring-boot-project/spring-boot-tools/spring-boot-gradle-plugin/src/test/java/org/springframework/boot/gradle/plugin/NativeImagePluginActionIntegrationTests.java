@@ -32,6 +32,7 @@ import org.gradle.testkit.runner.TaskOutcome;
 import org.junit.jupiter.api.TestTemplate;
 
 import org.springframework.boot.gradle.junit.GradleCompatibility;
+import org.springframework.boot.testsupport.TestResource;
 import org.springframework.boot.testsupport.gradle.testkit.GradleBuild;
 import org.springframework.util.FileSystemUtils;
 
@@ -73,7 +74,8 @@ class NativeImagePluginActionIntegrationTests {
 	@TestTemplate
 	void reachabilityMetadataConfigurationFilesFromFileRepositoryAreCopiedToJar() throws IOException {
 		writeDummySpringApplicationAotProcessorMainClass();
-		FileSystemUtils.copyRecursively(new File("src/test/resources/reachability-metadata-repository"),
+		FileSystemUtils.copyRecursively(
+				new TestResource("src/test/resources/reachability-metadata-repository").toFile(),
 				new File(this.gradleBuild.getProjectDir(), "reachability-metadata-repository"));
 		BuildResult result = this.gradleBuild.build("bootJar");
 		assertThat(result.task(":bootJar").getOutcome()).isEqualTo(TaskOutcome.SUCCESS);

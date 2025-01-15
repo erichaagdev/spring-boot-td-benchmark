@@ -27,6 +27,7 @@ import java.util.function.UnaryOperator;
 import jakarta.servlet.ServletContext;
 import org.junit.jupiter.api.Test;
 
+import org.springframework.boot.testsupport.TestResource;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.DefaultResourceLoader;
@@ -138,14 +139,14 @@ class ApplicationResourceLoaderTests {
 	@Test
 	void getResourceWhenPathIsRelative() throws IOException {
 		ResourceLoader loader = ApplicationResourceLoader.get();
-		String name = "src/test/resources/" + TEST_PROTOCOL_RESOLVERS_FACTORIES;
+		String name = new TestResource("src/test/resources/" + TEST_PROTOCOL_RESOLVERS_FACTORIES).getPath();
 		Resource resource = loader.getResource(name);
 		assertThat(resource.getFile()).isEqualTo(new File(name));
 	}
 
 	@Test
 	void getResourceWhenPathIsAbsolute() throws IOException {
-		File file = new File("src/test/resources/" + TEST_PROTOCOL_RESOLVERS_FACTORIES);
+		File file = new TestResource("src/test/resources/" + TEST_PROTOCOL_RESOLVERS_FACTORIES).toFile();
 		ResourceLoader loader = ApplicationResourceLoader.get();
 		Resource resource = loader.getResource(file.getAbsolutePath());
 		assertThat(resource.getFile()).hasSameBinaryContentAs(file);

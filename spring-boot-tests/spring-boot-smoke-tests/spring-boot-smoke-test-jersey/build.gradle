@@ -12,4 +12,5 @@ dependencies {
 	runtimeOnly("jakarta.xml.bind:jakarta.xml.bind-api")
 
 	testImplementation(project(":spring-boot-project:spring-boot-starters:spring-boot-starter-test"))
+	testImplementation(project(":spring-boot-project:spring-boot-tools:spring-boot-test-support"))
 }
